@@ -2,6 +2,9 @@ using BookReviewHub.Api.Data;
 using BookReviewHub.Api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OData.Edm;
+using Microsoft.AspNetCore.OData;
+using Microsoft.OData.ModelBuilder;
 
 var builder = WebApplication.CreateBuilder( args );
 
@@ -35,7 +38,16 @@ builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
 // 4) MVC controllers, Swagger
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddOData( opt => opt
+        .AddRouteComponents( "odata", GetEdmModel() )
+        .Select()
+        .Filter()
+        .OrderBy()
+        .Expand()
+        .SetMaxTop( 100 )
+        .Count()
+    ); 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -51,7 +63,19 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRouting();
+app.UseEndpoints( endpoints => {
+    endpoints.MapControllers();
+} );
 
 app.MapControllers();
+static IEdmModel GetEdmModel()
+{
+    var odataBuilder = new ODataConventionModelBuilder();
+    odataBuilder.EntitySet<Author>( "Authors" );
+    odataBuilder.EntitySet<Book>( "Books" );
+    odataBuilder.EntitySet<Review>( "Reviews" );
+    return odataBuilder.GetEdmModel();
+}
 
 app.Run();
