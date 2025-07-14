@@ -1,8 +1,8 @@
 ﻿namespace BookReviewHub.Api.Data;
 
-using BookReviewHub.Api.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using BookReviewHub.Api.Models;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
@@ -11,5 +11,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-    // Add your DbSets here later (e.g., Books, Reviews)
+    public DbSet<Author> Authors { get; set; } = default!;
+    public DbSet<Book> Books { get; set; } = default!;
+    public DbSet<Review> Reviews { get; set; } = default!;
 }
