@@ -6,13 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 
-[Route( "odata/[controller]" )]
-[ApiController]
+
 public class ReviewsController : ODataController
 {
     private readonly ApplicationDbContext _db;
     public ReviewsController( ApplicationDbContext db ) => _db = db;
 
-    [EnableQuery]
     public IQueryable<Review> Get() => _db.Reviews;
+
+    public async Task<IActionResult> Post( [FromBody] Review review )
+    {
+        if( !ModelState.IsValid )
+            return BadRequest( ModelState );
+
+        _db.Reviews.Add( review );
+        await _db.SaveChangesAsync();
+        return Created( review );
+    }
 }

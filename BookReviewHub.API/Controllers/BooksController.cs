@@ -6,13 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 
-[Route( "odata/[controller]" )]
-[ApiController]
-public class AuthorsController : ODataController
+
+public class BooksController : ODataController
 {
     private readonly ApplicationDbContext _db;
-    public AuthorsController( ApplicationDbContext db ) => _db = db;
+    public BooksController( ApplicationDbContext db ) => _db = db;
 
     [EnableQuery]
-    public IQueryable<Author> Get() => _db.Authors;
+    public IQueryable<Book> Get() => _db.Books;
 }

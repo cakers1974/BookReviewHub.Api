@@ -50,6 +50,12 @@ builder.Services.AddControllers()
     ); 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors( o => o.AddDefaultPolicy( policy =>
+    policy
+      .WithOrigins( "https://bookreviewhub-client-bndfg5hfcrdqbfev.centralus-01.azurewebsites.net" )
+      .AllowAnyHeader()
+      .AllowAnyMethod()
+) );
 
 var app = builder.Build();
 
@@ -62,13 +68,11 @@ if( app.Environment.IsDevelopment() ) {
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-app.UseAuthorization();
 app.UseRouting();
-app.UseEndpoints( endpoints => {
-    endpoints.MapControllers();
-} );
-
+app.UseAuthorization();
+app.UseCors();
 app.MapControllers();
+
 static IEdmModel GetEdmModel()
 {
     var odataBuilder = new ODataConventionModelBuilder();
