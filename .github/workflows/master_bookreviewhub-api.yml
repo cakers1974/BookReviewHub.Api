@@ -61,4 +61,4 @@ jobs:
         with:
           app-name: 'bookreviewhub-api'
           slot-name: 'Production'
-          package: '${{ env.DOTNET_ROOT }}/myapp'
+          package: '.net-app/myapp'
