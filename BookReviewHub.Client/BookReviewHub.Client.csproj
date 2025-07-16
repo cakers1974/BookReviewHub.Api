@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BookReviewHub.Api\BookReviewHub.Api.csproj" />
+    <ProjectReference Include="..\BookReviewHub.API\BookReviewHub.Api.csproj" />
   </ItemGroup>
 
 </Project>

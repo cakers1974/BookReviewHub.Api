@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "BookReviewHub.Client/1.0.0": {
+        "runtime": {
+          "BookReviewHub.Client.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BookReviewHub.Client/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

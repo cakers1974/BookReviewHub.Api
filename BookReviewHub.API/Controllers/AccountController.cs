@@ -13,18 +13,23 @@ public class AccountController : ControllerBase
         => _userManager = userManager;
 
     [HttpPost( "register" )]
-    public async Task<IActionResult> Register( RegisterModel model )
+    public async Task<IActionResult> Register( [FromBody] RegisterModel model )
     {
+        if( !ModelState.IsValid )
+            return BadRequest( ModelState );
+
         var user = new ApplicationUser {
-            UserName = model.UserName,
+            UserName = model.UserName,  // use the supplied UserName
             Email = model.Email
         };
 
         var result = await _userManager.CreateAsync( user, model.Password );
-        if( !result.Succeeded )
-            return BadRequest( result.Errors );
+        if( !result.Succeeded ) {
+            foreach( var error in result.Errors )
+                ModelState.AddModelError( error.Code, error.Description );
+            return ValidationProblem( ModelState );
+        }
 
-        // Return the new user's Id so you can reference it in Review.ReviewerId
         return Ok( new { user.Id } );
     }
 }

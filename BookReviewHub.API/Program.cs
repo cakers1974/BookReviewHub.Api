@@ -79,6 +79,13 @@ static IEdmModel GetEdmModel()
     odataBuilder.EntitySet<Author>( "Authors" );
     odataBuilder.EntitySet<Book>( "Books" );
     odataBuilder.EntitySet<Review>( "Reviews" );
+    odataBuilder.EntitySet<ApplicationUser>( "Users" );
+
+    odataBuilder
+      .Function( "TopRatedBooks" )
+      .ReturnsCollectionFromEntitySet<Book>( "Books" )
+      .Parameter<int>( "count" );
+
     return odataBuilder.GetEdmModel();
 }
 
