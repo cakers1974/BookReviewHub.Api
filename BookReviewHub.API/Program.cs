@@ -8,11 +8,9 @@ using Microsoft.OData.ModelBuilder;
 
 var builder = WebApplication.CreateBuilder( args );
 
-// 1) EF Core: register your DbContext
 builder.Services.AddDbContext<ApplicationDbContext>( options =>
     options.UseSqlServer( builder.Configuration.GetConnectionString( "DefaultConnection" ) ) );
 
-// 2) Identity: register Identity with EF stores
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>( options => {
         // optional: tweak password/user options here
@@ -33,11 +31,10 @@ builder.Services.AddDbContext<ApplicationDbContext>( options =>
     )
 );
 
-// 3) Authentication & Authorization (for future JWT or cookie setup)
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
-// 4) MVC controllers, Swagger
+// MVC controllers, Swagger
 builder.Services.AddControllers()
     .AddOData( opt => opt
         .AddRouteComponents( "odata", GetEdmModel() )
@@ -59,11 +56,11 @@ builder.Services.AddCors( o => o.AddDefaultPolicy( policy =>
 
 var app = builder.Build();
 
-// middleware pipeline
-if( app.Environment.IsDevelopment() ) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+
+app.UseSwaggerUI( c => {
+    c.SwaggerEndpoint( "/swagger/v1/swagger.json", "BookReviewHub API V1" );
+} );
 
 app.UseHttpsRedirection();
 
@@ -81,10 +78,17 @@ static IEdmModel GetEdmModel()
     odataBuilder.EntitySet<Review>( "Reviews" );
     odataBuilder.EntitySet<ApplicationUser>( "Users" );
 
+    // unbound function
     odataBuilder
       .Function( "TopRatedBooks" )
       .ReturnsCollectionFromEntitySet<Book>( "Books" )
       .Parameter<int>( "count" );
+
+    // bound function on Book
+    odataBuilder
+      .EntityType<Book>()
+      .Function( "AverageRating" )
+      .Returns<double>();
 
     return odataBuilder.GetEdmModel();
 }
